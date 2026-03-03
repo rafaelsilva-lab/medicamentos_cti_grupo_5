@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Farmacologia Clínica — Grupo de Apresentação</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0d14;
+      --surface: #111520;
+      --card: #161c2e;
+      --border: rgba(255,255,255,0.07);
+      --accent1: #5ee7c0;
+      --accent2: #e05c7a;
+      --accent3: #6ea8fe;
+      --accent4: #ffc96b;
+      --accent5: #b47cff;
+      --accent6: #ff8c5a;
+      --accent7: #5dd9f5;
+      --text: #e8ecf4;
+      --muted: #7a85a3;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ─── NOISE OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.18;
+      pointer-events: none;
+    }
+    .glow-1 { width: 600px; height: 600px; background: var(--accent1); top: -200px; left: -150px; animation: float1 8s ease-in-out infinite; }
+    .glow-2 { width: 500px; height: 500px; background: var(--accent2); bottom: -150px; right: -100px; animation: float2 10s ease-in-out infinite; }
+    .glow-3 { width: 400px; height: 400px; background: var(--accent3); top: 50%; left: 50%; transform: translate(-50%,-50%); animation: float3 12s ease-in-out infinite; }
+
+    @keyframes float1 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(30px)} }
+    @keyframes float2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-25px)} }
+    @keyframes float3 { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1) translate(-45%,-45%)} }
+
+    .hero-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent1);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s forwards;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 7vw, 6rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      max-width: 900px;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.4s forwards;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      background: linear-gradient(135deg, var(--accent1) 0%, var(--accent3) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle {
+      margin-top: 1.5rem;
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 560px;
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.6s forwards;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-members {
+      margin-top: 3rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.6rem;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.8s forwards;
+      position: relative;
+      z-index: 1;
+    }
+
+    .member-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      font-size: 0.82rem;
+      color: var(--muted);
+      backdrop-filter: blur(6px);
+    }
+
+    .member-chip span.dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--muted);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-family: 'DM Mono', monospace;
+      opacity: 0;
+      animation: fadeIn 1s 1.5s forwards;
+      z-index: 1;
+    }
+
+    .scroll-arrow {
+      width: 20px; height: 20px;
+      border-right: 2px solid var(--muted);
+      border-bottom: 2px solid var(--muted);
+      transform: rotate(45deg);
+      animation: bounce 1.6s ease-in-out infinite;
+    }
+
+    @keyframes bounce { 0%,100%{transform:rotate(45deg) translateY(0)} 50%{transform:rotate(45deg) translateY(5px)} }
+
+    /* ─── NAVIGATION ─── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,13,20,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .nav-inner::-webkit-scrollbar { display: none; }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 1rem 1.1rem;
+      font-size: 0.78rem;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      white-space: nowrap;
+      transition: color 0.2s;
+      position: relative;
+    }
+
+    .nav-btn::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      border-radius: 2px 2px 0 0;
+      transform: scaleX(0);
+      transition: transform 0.25s;
+    }
+
+    .nav-btn:hover { color: var(--text); }
+    .nav-btn.active { color: var(--text); }
+    .nav-btn.active::after { transform: scaleX(1); }
+
+    /* ─── MAIN CONTENT ─── */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 2rem 6rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ─── SECTION ─── */
+    .med-section {
+      display: none;
+      animation: fadeUp 0.5s forwards;
+    }
+    .med-section.active { display: block; }
+
+    .section-header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-number {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .section-presenter {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      padding: 0.4rem 1rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      width: fit-content;
+    }
+
+    .section-presenter::before {
+      content: '👤';
+      font-size: 0.9rem;
+    }
+
+    /* ─── CARDS GRID ─── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.8rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: 16px 16px 0 0;
+    }
+
+    .card-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .card-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+
+    .card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      line-height: 1.3;
+    }
+
+    .card p, .card li {
+      font-size: 0.9rem;
+      line-height: 1.75;
+      color: #bcc5d8;
+    }
+
+    .card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .card li::before {
+      content: '→ ';
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+    }
+
+    /* ─── REFERENCES ─── */
+    .refs-block {
+      margin-top: 2rem;
+      padding: 1.5rem 1.8rem;
+      background: rgba(255,255,255,0.025);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .refs-block h4 {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.8rem;
+    }
+
+    .refs-block a {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--accent3);
+      text-decoration: none;
+      word-break: break-all;
+      line-height: 1.8;
+      transition: color 0.2s;
+    }
+
+    .refs-block a:hover { color: var(--accent1); text-decoration: underline; }
+
+    /* ─── COLOR THEMES per med ─── */
+    .theme-1 .card::before, .theme-1 .card:hover { border-color: rgba(94,231,192,0.3); }
+    .theme-1 .card::before { background: var(--accent1); }
+    .theme-1 .card-icon { background: rgba(94,231,192,0.1); }
+    .theme-1 .section-number { color: var(--accent1); }
+    .theme-1 .section-presenter { background: rgba(94,231,192,0.1); color: var(--accent1); }
+    .theme-1 .nav-btn.active::after { background: var(--accent1); }
+
+    .theme-2 .card::before, .theme-2 .card:hover { border-color: rgba(224,92,122,0.3); }
+    .theme-2 .card::before { background: var(--accent2); }
+    .theme-2 .card-icon { background: rgba(224,92,122,0.1); }
+    .theme-2 .section-number { color: var(--accent2); }
+    .theme-2 .section-presenter { background: rgba(224,92,122,0.1); color: var(--accent2); }
+
+    .theme-3 .card::before, .theme-3 .card:hover { border-color: rgba(110,168,254,0.3); }
+    .theme-3 .card::before { background: var(--accent3); }
+    .theme-3 .card-icon { background: rgba(110,168,254,0.1); }
+    .theme-3 .section-number { color: var(--accent3); }
+    .theme-3 .section-presenter { background: rgba(110,168,254,0.1); color: var(--accent3); }
+
+    .theme-4 .card::before, .theme-4 .card:hover { border-color: rgba(255,201,107,0.3); }
+    .theme-4 .card::before { background: var(--accent4); }
+    .theme-4 .card-icon { background: rgba(255,201,107,0.1); }
+    .theme-4 .section-number { color: var(--accent4); }
+    .theme-4 .section-presenter { background: rgba(255,201,107,0.1); color: var(--accent4); }
+
+    .theme-5 .card::before, .theme-5 .card:hover { border-color: rgba(180,124,255,0.3); }
+    .theme-5 .card::before { background: var(--accent5); }
+    .theme-5 .card-icon { background: rgba(180,124,255,0.1); }
+    .theme-5 .section-number { color: var(--accent5); }
+    .theme-5 .section-presenter { background: rgba(180,124,255,0.1); color: var(--accent5); }
+
+    .theme-6 .card::before, .theme-6 .card:hover { border-color: rgba(255,140,90,0.3); }
+    .theme-6 .card::before { background: var(--accent6); }
+    .theme-6 .card-icon { background: rgba(255,140,90,0.1); }
+    .theme-6 .section-number { color: var(--accent6); }
+    .theme-6 .section-presenter { background: rgba(255,140,90,0.1); color: var(--accent6); }
+
+    .theme-7 .card::before, .theme-7 .card:hover { border-color: rgba(93,217,245,0.3); }
+    .theme-7 .card::before { background: var(--accent7); }
+    .theme-7 .card-icon { background: rgba(93,217,245,0.1); }
+    .theme-7 .section-number { color: var(--accent7); }
+    .theme-7 .section-presenter { background: rgba(93,217,245,0.1); color: var(--accent7); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.08em;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 600px) {
+      .cards-grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 2.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── HERO ─── -->
+<section class="hero">
+  <div class="hero-glow glow-1"></div>
+  <div class="hero-glow glow-2"></div>
+  <div class="hero-glow glow-3"></div>
+
+  <p class="hero-label">Farmacologia Clínica · Apresentação em Grupo</p>
+  <h1>Medicamentos<br/><em>Injetáveis</em> em Foco</h1>
+  <p class="hero-subtitle">Indicações, vias de administração e reações adversas de 7 fármacos de uso hospitalar — com referências verificáveis.</p>
+
+  <div class="hero-members">
+    <span class="member-chip"><span class="dot" style="background:var(--accent1)"></span>Rafael</span>
+    <span class="member-chip"><span class="dot" style="background:var(--accent2)"></span>Rafaela</span>
+    <span class="member-chip"><span class="dot" style="background:var(--accent3)"></span>Chirley</span>
+    <span class="member-chip"><span class="dot" style="background:var(--accent4)"></span>Amélia</span>
+    <span class="member-chip"><span class="dot" style="background:var(--accent5)"></span>Marirley</span>
+    <span class="member-chip"><span class="dot" style="background:var(--accent6)"></span>Junia</span>
+    <span class="member-chip"><span class="dot" style="background:var(--accent7)"></span>Luciene</span>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Ver medicamentos</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- ─── NAVIGATION ─── -->
+<nav>
+  <div class="nav-inner" id="navBar">
+    <button class="nav-btn active" onclick="show(0,this)" data-theme="1">01 · Rafael</button>
+    <button class="nav-btn" onclick="show(1,this)" data-theme="2">02 · Rafaela</button>
+    <button class="nav-btn" onclick="show(2,this)" data-theme="3">03 · Chirley</button>
+    <button class="nav-btn" onclick="show(3,this)" data-theme="4">04 · Amélia</button>
+    <button class="nav-btn" onclick="show(4,this)" data-theme="5">05 · Marirley</button>
+    <button class="nav-btn" onclick="show(5,this)" data-theme="6">06 · Junia</button>
+    <button class="nav-btn" onclick="show(6,this)" data-theme="7">07 · Luciene</button>
+  </div>
+</nav>
+
+<!-- ─── MAIN ─── -->
+<main id="mainContent">
+
+  <!-- ══ 1. METILPREDNISOLONA ══ -->
+  <div class="med-section theme-1 active" id="sec0">
+    <div class="section-header">
+      <span class="section-number">Medicamento 01</span>
+      <h2 class="section-title">Metilprednisolona,<br/>Succinato Sódico 125mg</h2>
+      <div class="section-presenter">Apresentado por: Rafael</div>
+    </div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-icon">🎯</div>
+        <div class="card-label">Indicação</div>
+        <h3>Para que é usado?</h3>
+        <ul>
+          <li>Distúrbios reumáticos e autoimunes (LES)</li>
+          <li>Doenças alérgicas graves e anafilaxia</li>
+          <li>Doenças respiratórias (asma grave, DPOC)</li>
+          <li>Estados inflamatórios agudos e edema cerebral</li>
+          <li>Distúrbios hematológicos, neoplásicos e edematosos</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-icon">💉</div>
+        <div class="card-label">Via de Administração</div>
+        <h3>Como é administrado?</h3>
+        <ul>
+          <li>IV direta: 125 mg em ≥ 1 minuto</li>
+          <li>Infusão IV: diluir em SF 0,9% ou SG 5% — 50 mL</li>
+          <li>Via intramuscular (IM) profunda</li>
+          <li>⚠️ Doses altas em bolus: risco de hipotensão e arritmia</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚠️</div>
+        <div class="card-label">Reações Adversas</div>
+        <h3>Principais efeitos indesejados</h3>
+        <ul>
+          <li>Miopatia aguda generalizada (inclui musculatura respiratória)</li>
+          <li>Osteoporose com uso prolongado</li>
+          <li>Elevação de glicemia e pressão arterial</li>
+          <li>Hepatite aguda (lesão hepática induzida)</li>
+          <li>Alterações eletrolíticas</li>
+        </ul>
+      </div>
+    </div>
+    <div class="refs-block">
+      <h4>Referências</h4>
+      <a href="https://guiafarmaceutico.hsl.org.br/metilprednisolona-succinato-sodico" target="_blank">Guia Farmacêutico HSL — Metilprednisolona</a>
+      <a href="https://www.saudedireta.com.br/catinc/drugs/bulas/solumedrol.pdf" target="_blank">Bula SOLU-MEDROL (Pfizer) — PDF</a>
+      <a href="https://aplicacoes.einstein.br/manualfarmaceutico" target="_blank">Manual Farmacêutico Einstein</a>
+    </div>
+  </div>
+
+  <!-- ══ 2. METOPROLOL ══ -->
+  <div class="med-section theme-2" id="sec1">
+    <div class="section-header">
+      <span class="section-number">Medicamento 02</span>
+      <h2 class="section-title">Metoprolol,<br/>Tartarato 5mg/5mL</h2>
+      <div class="section-presenter">Apresentado por: Rafaela</div>
+    </div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-icon">🎯</div>
+        <div class="card-label">Indicação</div>
+        <h3>Para que é usado?</h3>
+        <ul>
+          <li>Taquicardia supraventricular aguda</li>
+          <li>Hipertensão arterial sistêmica</li>
+          <li>Angina pectoris estável e instável</li>
+          <li>Infarto agudo do miocárdio (fase aguda)</li>
+          <li>Arritmias cardíacas diversas</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-icon">💉</div>
+        <div class="card-label">Via de Administração</div>
+        <h3>Como é administrado?</h3>
+        <ul>
+          <li>IV em bolus: 5 mg a cada 5 min (máx. 15 mg)</li>
+          <li>IAM: 3 bolus de 5 mg em intervalos de 2 minutos</li>
+          <li>Monitorização da FC e PA durante infusão</li>
+          <li>Não diluir em soluções alcalinas</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚠️</div>
+        <div class="card-label">Reações Adversas</div>
+        <h3>Principais efeitos indesejados</h3>
+        <ul>
+          <li>Bradicardia e bradiarritmias</li>
+          <li>Hipotensão arterial</li>
+          <li>Insuficiência cardíaca descompensada</li>
+          <li>Broncoespasmo (cautela em asmáticos)</li>
+          <li>Distúrbios de condução cardíaca (BAV)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="refs-block">
+      <h4>Referências</h4>
+      <a href="https://www.azmed.com.br/content/dam/multibrand/br/pt/azmed-2022/home/bulas-profissionais/bulas/Seloken_IV_Bula_Profissional.pdf" target="_blank">Bula SELOKEN IV (AstraZeneca) — PDF</a>
+      <a href="https://www.cristalia.com.br/index.php/produto/248/bula-profissional" target="_blank">Bula BETACRIS (Cristália)</a>
+      <a href="https://guiafarmaceutico.hospitalsaocamilosp.org.br/tartarato-de-metoprolol/" target="_blank">Guia Farmacêutico Hospital São Camilo</a>
+    </div>
+  </div>
+
+  <!-- ══ 3. MIDAZOLAM ══ -->
+  <div class="med-section theme-3" id="sec2">
+    <div class="section-header">
+      <span class="section-number">Medicamento 03</span>
+      <h2 class="section-title">Midazolam,<br/>Cloridrato 15mg/3mL</h2>
+      <div class="section-presenter">Apresentado por: Chirley</div>
+    </div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-icon">🎯</div>
+        <div class="card-label">Indicação</div>
+        <h3>Para que é usado?</h3>
+        <ul>
+          <li>Sedação consciente em procedimentos diagnósticos</li>
+          <li>Pré-medicação anestésica</li>
+          <li>Indução e manutenção da anestesia geral</li>
+          <li>Sedação em UTI (ventilação mecânica)</li>
+          <li>Controle de convulsões agudas</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-icon">💉</div>
+        <div class="card-label">Via de Administração</div>
+        <h3>Como é administrado?</h3>
+        <ul>
+          <li>IV lenta: 1 mg a cada 30 segundos</li>
+          <li>IM: dose única profunda</li>
+          <li>Via retal (especialmente em crianças)</li>
+          <li>⚠️ Ter flumazenil e suporte ventilatório à mão</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚠️</div>
+        <div class="card-label">Reações Adversas</div>
+        <h3>Principais efeitos indesejados</h3>
+        <ul>
+          <li>Depressão e parada respiratória (principal risco)</li>
+          <li>Sonolência, confusão mental e desorientação</li>
+          <li>Fraqueza muscular e ataxia</li>
+          <li>Náuseas, vômitos e soluços</li>
+          <li>Reações paradoxais (agitação, agressividade)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="refs-block">
+      <h4>Referências</h4>
+      <a href="https://www.cristalia.com.br/produto/86/bula-profissional" target="_blank">Bula DORMIRE (Cristália)</a>
+      <a href="https://guiafarmaceutico.hospitalsaocamilosp.org.br/midazolam/" target="_blank">Guia Farmacêutico Hospital São Camilo — Midazolam</a>
+    </div>
+  </div>
+
+  <!-- ══ 4. NITROGLICERINA ══ -->
+  <div class="med-section theme-4" id="sec3">
+    <div class="section-header">
+      <span class="section-number">Medicamento 04</span>
+      <h2 class="section-title">Nitroglicerina<br/>50mg/10mL</h2>
+      <div class="section-presenter">Apresentado por: Amélia</div>
+    </div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-icon">🎯</div>
+        <div class="card-label">Indicação</div>
+        <h3>Para que é usado?</h3>
+        <ul>
+          <li>Hipertensão perioperatória</li>
+          <li>Insuficiência cardíaca congestiva no IAM</li>
+          <li>Angina refratária a nitroglicerina sublingual</li>
+          <li>Indução de hipotensão controlada intraoperatória</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-icon">💉</div>
+        <div class="card-label">Via de Administração</div>
+        <h3>Como é administrado?</h3>
+        <ul>
+          <li>Infusão IV contínua em bomba infusora</li>
+          <li>Concentração máx.: 400 mcg/mL (SF 0,9% ou SG 5%)</li>
+          <li>Iniciar 5 mcg/min — aumentar a cada 3–5 min</li>
+          <li>Máx.: 200 mcg/min</li>
+          <li>⚠️ Usar equipo e frasco sem PVC (adsorção)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚠️</div>
+        <div class="card-label">Reações Adversas</div>
+        <h3>Principais efeitos indesejados</h3>
+        <ul>
+          <li>Cefaleia (muito frequente — efeito vasodilatador)</li>
+          <li>Hipotensão arterial e rubor facial</li>
+          <li>Taquicardia reflexa e palpitações</li>
+          <li>Tontura, agitação e inquietação</li>
+          <li>Tolerância rápida (em 24h de infusão contínua)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="refs-block">
+      <h4>Referências</h4>
+      <a href="https://guiafarmaceutico.hsl.org.br/nitroglicerina" target="_blank">Guia Farmacêutico HSL — Nitroglicerina</a>
+      <a href="https://www.cristalia.com.br/produto/177/bula-paciente" target="_blank">Bula TRIDIL (Cristália)</a>
+      <a href="https://guiafarmaco.erastogaertner.com.br/farmacoterapeutico/medicamentos/279" target="_blank">Guia Erasto Gaertner</a>
+    </div>
+  </div>
+
+  <!-- ══ 5. PROMETAZINA ══ -->
+  <div class="med-section theme-5" id="sec4">
+    <div class="section-header">
+      <span class="section-number">Medicamento 05</span>
+      <h2 class="section-title">Prometazina<br/>25mg/mL</h2>
+      <div class="section-presenter">Apresentado por: Marirley</div>
+    </div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-icon">🎯</div>
+        <div class="card-label">Indicação</div>
+        <h3>Para que é usado?</h3>
+        <ul>
+          <li>Reações anafiláticas e alérgicas graves</li>
+          <li>Prevenção de náuseas e vômitos (pós-op, viagens)</li>
+          <li>Pré-anestesia e potencialização de analgésicos</li>
+          <li>Sedação leve em procedimentos</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-icon">💉</div>
+        <div class="card-label">Via de Administração</div>
+        <h3>Como é administrado?</h3>
+        <ul>
+          <li>IM profunda (preferencial): 25–50 mg/dose</li>
+          <li>Máx. diário: 100 mg</li>
+          <li>IV: apenas se necessário, ≤ 25 mg/min; risco de necrose por extravasamento</li>
+          <li>⚠️ Evitar injeção intra-arterial inadvertida</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚠️</div>
+        <div class="card-label">Reações Adversas</div>
+        <h3>Principais efeitos indesejados</h3>
+        <ul>
+          <li>Sedação intensa e boca seca</li>
+          <li>Hipotensão ortostática (especialmente na forma injetável)</li>
+          <li>Bradicardia ou taquicardia</li>
+          <li>Sintomas extrapiramidais e tremores</li>
+          <li>Retenção urinária e constipação</li>
+        </ul>
+      </div>
+    </div>
+    <div class="refs-block">
+      <h4>Referências</h4>
+      <a href="https://guiafarmaceutico.hsl.org.br/prometazina" target="_blank">Guia Farmacêutico HSL — Prometazina</a>
+      <a href="https://guiafarmaceutico.hospitalsaocamilosp.org.br/prometazina/" target="_blank">Guia Farmacêutico Hospital São Camilo — Prometazina</a>
+      <a href="https://consultaremedios.com.br/cloridrato-de-prometazina/bula" target="_blank">Bula FENERGAN (Sanofi) — Consulta Remédios</a>
+    </div>
+  </div>
+
+  <!-- ══ 6. SUCCINILCOLINA ══ -->
+  <div class="med-section theme-6" id="sec5">
+    <div class="section-header">
+      <span class="section-number">Medicamento 06</span>
+      <h2 class="section-title">Succinilcolina,<br/>Cloridrato 500mg</h2>
+      <div class="section-presenter">Apresentado por: Junia</div>
+    </div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-icon">🎯</div>
+        <div class="card-label">Indicação</div>
+        <h3>Para que é usado?</h3>
+        <ul>
+          <li>Adjuvante da anestesia geral</li>
+          <li>Facilitação da intubação traqueal (sequência rápida)</li>
+          <li>Relaxamento muscular durante cirurgias</li>
+          <li>Suporte ventilatório em UTI</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-icon">💉</div>
+        <div class="card-label">Via de Administração</div>
+        <h3>Como é administrado?</h3>
+        <ul>
+          <li>IV: 0,3–1,1 mg/kg (bloqueio em ~1 min; dura 4–6 min)</li>
+          <li>IM: quando IV indisponível</li>
+          <li>Infusão contínua: solução 1–2 mg/mL</li>
+          <li>⚠️ Exige equipamento de ventilação imediato</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚠️</div>
+        <div class="card-label">Reações Adversas</div>
+        <h3>Principais efeitos indesejados</h3>
+        <ul>
+          <li>Apneia / depressão respiratória prolongada</li>
+          <li>Hipertermia maligna (potencialmente fatal)</li>
+          <li>Rabdomiólise com hipercalemia grave (crianças)</li>
+          <li>Bradicardia e parada cardíaca</li>
+          <li>Anafilaxia (rara)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="refs-block">
+      <h4>Referências</h4>
+      <a href="https://www.uniaoquimica.com.br/wp-content/uploads/2020/08/bula_Succinil-Colin.pdf" target="_blank">Bula Succinil Colin (União Química) — PDF</a>
+      <a href="https://www.blau.com.br/storage/app/media/bulas/novas/Bula_Succitrat.pdf" target="_blank">Bula Succitrat (Blau) — PDF</a>
+      <a href="https://rmmg.org/artigo/detalhes/1941" target="_blank">Artigo RMMG — Succinilcolina na Intubação de Sequência Rápida</a>
+    </div>
+  </div>
+
+  <!-- ══ 7. VERAPAMIL ══ -->
+  <div class="med-section theme-7" id="sec6">
+    <div class="section-header">
+      <span class="section-number">Medicamento 07</span>
+      <h2 class="section-title">Verapamil,<br/>Cloridrato 5mg/2mL</h2>
+      <div class="section-presenter">Apresentado por: Luciene</div>
+    </div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-icon">🎯</div>
+        <div class="card-label">Indicação</div>
+        <h3>Para que é usado?</h3>
+        <ul>
+          <li>Taquicardias supraventriculares (TSV) agudas</li>
+          <li>Flutter e fibrilação atrial (controle da FC)</li>
+          <li>Angina estável e vasoespástica</li>
+          <li>Hipertensão arterial sistêmica</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-icon">💉</div>
+        <div class="card-label">Via de Administração</div>
+        <h3>Como é administrado?</h3>
+        <ul>
+          <li>IV lenta: 5–10 mg em 2 minutos (idosos: 3 min)</li>
+          <li>Dose adicional: 10 mg após 30 min se necessário</li>
+          <li>Monitorizar PA e ECG durante a infusão</li>
+          <li>⚠️ Não associar com betabloqueadores IV</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚠️</div>
+        <div class="card-label">Reações Adversas</div>
+        <h3>Principais efeitos indesejados</h3>
+        <ul>
+          <li>Bradicardia e bloqueio atrioventricular</li>
+          <li>Hipotensão grave (especialmente IV)</li>
+          <li>Edema periférico e rubor</li>
+          <li>Cefaleia, tontura e náuseas</li>
+          <li>Constipação (uso oral prolongado)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="refs-block">
+      <h4>Referências</h4>
+      <a href="https://consultaremedios.com.br/cloridrato-de-verapamil/bula" target="_blank">Bula Cloridrato de Verapamil — Consulta Remédios</a>
+      <a href="https://guiadebulas.com/verapamil/" target="_blank">Guia de Bulas — Verapamil</a>
+      <a href="https://sanarmed.com/resumo-de-cloridrato-de-verapamil-ligas/" target="_blank">Sanarmed — Resumo Clínico Verapamil</a>
+    </div>
+  </div>
+
+</main>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <p>Farmacologia Clínica · Rafael · Rafaela · Chirley · Amélia · Marirley · Junia · Luciene</p>
+  <p style="margin-top:0.4rem;opacity:0.5;">Informações baseadas em bulas ANVISA e guias de hospitais de referência</p>
+</footer>
+
+<script>
+  const sections = document.querySelectorAll('.med-section');
+  const navBtns  = document.querySelectorAll('.nav-btn');
+  const main     = document.getElementById('mainContent');
+
+  // Color accent per theme
+  const accents = {
+    '1':'#5ee7c0','2':'#e05c7a','3':'#6ea8fe',
+    '4':'#ffc96b','5':'#b47cff','6':'#ff8c5a','7':'#5dd9f5'
+  };
+
+  function show(index, btn) {
+    sections.forEach(s => s.classList.remove('active'));
+    navBtns.forEach(b => b.classList.remove('active'));
+    sections[index].classList.add('active');
+    btn.classList.add('active');
+
+    // Dynamic accent underline
+    const theme = btn.getAttribute('data-theme');
+    btn.style.setProperty('--btn-accent', accents[theme]);
+    btn.style.cssText += `;--btn-accent:${accents[theme]}`;
+
+    // Update active nav btn underline color inline
+    document.querySelectorAll('.nav-btn').forEach(b => {
+      b.style.removeProperty('color');
+    });
+
+    // Scroll to nav smoothly
+    main.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Dynamic ::after color via inline style injection
+  const styleEl = document.createElement('style');
+  document.head.appendChild(styleEl);
+
+  function updateActiveUnderline(btn) {
+    const theme = btn.getAttribute('data-theme');
+    styleEl.textContent = `.nav-btn.active::after { background: ${accents[theme]} !important; }`;
+  }
+
+  navBtns.forEach(btn => {
+    btn.addEventListener('click', () => updateActiveUnderline(btn));
+  });
+
+  // Init
+  updateActiveUnderline(navBtns[0]);
+</script>
+</body>
+</html>
